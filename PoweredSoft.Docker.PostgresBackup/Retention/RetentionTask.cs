@@ -50,7 +50,7 @@ namespace PoweredSoft.Docker.PostgresBackup.Retention
             {
                 if (file is IFileInfo fileInfo)
                 {
-                    if (fileInfo.FileName.EndsWith(".postgres.zip") && fileInfo.CreatedTimeUtc < retentionDate)
+                    if (fileInfo.FileName.EndsWith(".sql.zip") && fileInfo.CreatedTimeUtc < retentionDate)
                     {
                         Console.WriteLine($"Attempting to delete file {fileInfo.FileName} because {fileInfo.CreatedTimeUtc} < {retentionDate}");
                         await storageProvider.DeleteFileAsync(fileInfo.Path);

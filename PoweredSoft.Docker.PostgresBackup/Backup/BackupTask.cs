@@ -37,6 +37,8 @@ namespace PoweredSoft.Docker.PostgresBackup.Backup
         protected virtual NpgsqlConnection GetDatabaseConnection()
         {
             var pgCSB = new NpgsqlConnectionStringBuilder();
+            Console.WriteLine(postresConfiguration.Host);
+            Console.WriteLine(postresConfiguration.User);
             pgCSB.Host = postresConfiguration.Host;
             pgCSB.Port = postresConfiguration.Port;
             pgCSB.Username = postresConfiguration.User;
@@ -96,9 +98,11 @@ namespace PoweredSoft.Docker.PostgresBackup.Backup
                     var zippedTempFile = Path.GetTempFileName();
                     ExecuteDump(databaseName, tempFileName);
 
+                    Console.WriteLine("Now compressing the backup...");
+
                     using (var zip = new ZipFile())
                     {
-                        zip.AddFile(tempFileName, "").FileName = $"{databaseName}.postgres";
+                        zip.AddFile(tempFileName, "").FileName = $"{databaseName}.sql";
                         zip.Save(zippedTempFile);
 
                         try
@@ -113,7 +117,7 @@ namespace PoweredSoft.Docker.PostgresBackup.Backup
                         Console.WriteLine("Succesfully created compressed postgres backup file.");
                     }
 
-                    var destination = $"{backupOptions.BasePath}/{databaseName}_{DateTime.Now:yyyyMMdd_hhmmss_fff}.postgres.zip";
+                    var destination = $"{backupOptions.BasePath}/{databaseName}_{DateTime.Now:yyyyMMdd_hhmmss_fff}.sql.zip";
                     using (var fs = new FileStream(zippedTempFile, FileMode.Open, FileAccess.Read))
                     {
                         await storageProvider.WriteFileAsync(fs, destination);
@@ -201,7 +205,7 @@ namespace PoweredSoft.Docker.PostgresBackup.Backup
 
         protected void ExecuteLinuxDump(string databaseName, string tempFileName)
         {
-            var command = $"PGPASSWORD=\"{postresConfiguration.Password}\" pg_dump -h {postresConfiguration.Host} -p {postresConfiguration.Port} -U {postresConfiguration.User} -F c -b -v -f \"{tempFileName}\" {databaseName}";
+            var command = $"PGPASSWORD=\"{postresConfiguration.Password}\" /usr/bin/pg_dump -h {postresConfiguration.Host} -p {postresConfiguration.Port} -U {postresConfiguration.User} {databaseName} > {tempFileName}";
 
             var result = "";
             using (var proc = new Process())

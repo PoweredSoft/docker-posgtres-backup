@@ -59,9 +59,8 @@ namespace PoweredSoft.Docker.PostgresBackup
                     {
                         try
                         {
-                            await notifyService.SendNotification($"MYSQL BACKUP FAILED", $"Task {task.Name} failed", new System.Collections.Generic.Dictionary<string, string>
+                            await notifyService.SendNotification($"Task {task.Name} failed", ex.Message , new System.Collections.Generic.Dictionary<string, string>
                             {
-                                { "ExceptionMessage", ex.Message },
                                 { "InnerExceptionMessage", ex.InnerException?.Message }
                             });
                         }
