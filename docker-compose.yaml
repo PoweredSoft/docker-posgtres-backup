@@ -2,7 +2,7 @@ version: '2'
 
 services:
   postgres:
-    container_name: postgres_container
+    container_name: postgres_backup_postgres
     image: postgres
     environment:
       POSTGRES_USER: postgres
@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
   
   pgadmin:
-    container_name: pgadmin_container
+    container_name: postgres_backup_pgadmin
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
@@ -23,6 +23,7 @@ services:
     restart: unless-stopped
 
   minio1:
+    container_name: postgres_backup_minio
     image: minio/minio
     volumes:
       - //c/data:/data
@@ -32,3 +33,8 @@ services:
     environment:
       MINIO_ACCESS_KEY: myminio
       MINIO_SECRET_KEY: myexample
+
+networks:
+  default:
+    external:
+      name: postgres
