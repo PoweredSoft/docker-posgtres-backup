@@ -43,6 +43,7 @@ namespace PoweredSoft.Docker.PostgresBackup.Backup
             pgCSB.Port = postresConfiguration.Port;
             pgCSB.Username = postresConfiguration.User;
             pgCSB.Password = postresConfiguration.Password;
+            pgCSB.Database = "postgres";
             pgCSB.CommandTimeout = 120;
             var ret = new NpgsqlConnection(pgCSB.ConnectionString);
             return ret;
