@@ -50,6 +50,7 @@ namespace PoweredSoft.Docker.PostgresBackup.Retention
             {
                 if (file is IFileInfo fileInfo)
                 {
+                    Console.WriteLine($"Checking if {file.Path} with {fileInfo.CreatedTimeUtc} is small than {retentionDate}");
                     if (fileInfo.FileName.EndsWith(".sql.zip") && fileInfo.CreatedTimeUtc < retentionDate)
                     {
                         Console.WriteLine($"Attempting to delete file {fileInfo.FileName} because {fileInfo.CreatedTimeUtc} < {retentionDate}");
